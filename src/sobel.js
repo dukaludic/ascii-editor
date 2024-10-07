@@ -1,22 +1,10 @@
-import { SOBEL_THRESHOLD } from "../index.js";
+import sharp from "sharp";
 
-export function calculateAverageProximalLuminance(matrix, cellSide, height, width) {
-  const outputLuminocity = [];
-  for (let i = 0; i < height; i += cellSide) {
-    for (let j = 0; j < width; j += cellSide) {
-      let cellSum = 0;
-      for (let k = i; k < i + cellSide; k++) {
-        for (let l = j; l < j + cellSide; l++) {
-          cellSum += matrix[k][l];
-        }
-      }
-      const cellAverage = cellSum / cellSide ** 2;
-      outputLuminocity.push(cellAverage);
-    }
-  }
+const __dirname = process.cwd();
+const path = process.argv[2];
 
-  return outputLuminocity;
-}
+const { data, info } = await sharp(path).blur(5).greyscale().raw().toBuffer({ resolveWithObject: true });
+const { width, height } = info;
 
 export function getPixelMatrix(data, height, width) {
   const matrix = new Array(height).fill().map(() => []);
@@ -33,6 +21,8 @@ export function getPixelMatrix(data, height, width) {
 
   return matrix;
 }
+
+const matrix = getPixelMatrix(data);
 
 function makeEmptyMatrix(width, height) {
   const matrix = new Array(height);
@@ -60,21 +50,14 @@ export function sobelize(matrix, width, height) {
   const directions = makeEmptyMatrix(width, height);
   const magnitudesArray = [];
 
-  for (let i = 0; i < height; i++) {
-    for (let j = 0; j < width; j++) {
+  for (let i = 1; i < height - 1; i++) {
+    for (let j = 1; j < width - 1; j++) {
       let sumX = 0;
       let sumY = 0;
 
       for (let k = 0; k <= 2; k++) {
         for (let l = 0; l <= 2; l++) {
-          if (!matrix[i + k - 1]) {
-            sumX = 0;
-            sumY = 0;
-            continue;
-          }
-
           const px = matrix[i + k - 1][j + l - 1];
-
           sumX += px * kernels.x[k][l];
           sumY += px * kernels.y[k][l];
         }
@@ -87,9 +70,11 @@ export function sobelize(matrix, width, height) {
       magnitudes[i][j] = mag > threshold ? mag : 0;
       directions[i][j] = mag > threshold ? direction : 0;
 
-      magnitudesArray.push(mag > threshold ? mag : 0);
+      magnitudesArray[i] = mag > threshold ? mag : 0;
     }
   }
 
   return { magnitudes, directions, magnitudesArray };
 }
+
+const sobel = sobelize(matrix, width, height);
