@@ -1,7 +1,7 @@
-import { ORIGINAL_HEIGHT, ORIGINAL_WIDTH } from "../index.js";
+import { CONVERTED_HEIGHT, CONVERTED_WIDTH, ORIGINAL_HEIGHT, ORIGINAL_WIDTH } from "../index.js";
 
-const ascii = ["■", "@", "?", "0", "P", "o", "c", ":", ".", " "].reverse();
-const edges = ["#", "|", "—", "/", "\\"];
+const ascii = ["■", "@", "?", "0", "P", "o", "c", ":", ".", " "];
+const edges = ["|", "—", "/", "\\"];
 
 export function findAppropriateAsciiCharacter(value) {
   // return " ";
@@ -13,22 +13,42 @@ export function findAppropriateAsciiCharacter(value) {
   return ascii[index];
 }
 
+export function findAppropriateEdgeCharacter(direction) {
+  switch (true) {
+    case direction >= -0.1 && direction <= 0.1:
+      return "—";
+    case direction > 0.1 && direction <= 0.78:
+      return "/";
+    case direction > 0.78 && direction <= 2.35:
+      return "|";
+    case direction > 2.35 && direction <= 3.14:
+      return "\\";
+    case direction < -0.1 && direction >= -0.78:
+      return "\\";
+    case direction < -0.78 && direction >= -2.35:
+      return "|";
+    case direction < -2.35 && direction >= -3.14:
+      return "/";
+    default:
+      return " ";
+  }
+}
+
 export function convertToAscii(matrix, magnitudes, directions) {
   const output = [];
 
-  for (let i = 0; i < ORIGINAL_HEIGHT; i++) {
-    for (let j = 0; j < ORIGINAL_WIDTH; j++) {
-      const edgeMapTwin = directions[i][j];
-      const isEdge = edgeMapTwin !== 0;
+  for (let i = 0; i < CONVERTED_HEIGHT; i++) {
+    for (let j = 0; j < CONVERTED_WIDTH; j++) {
+      const edgeMapTwin = magnitudes[i * 10][j * 10];
+      const isEdge = edgeMapTwin > 0;
+      const direction = directions[i * 10][j * 10];
       if (isEdge) {
-        output.push("#");
+        output.push(findAppropriateEdgeCharacter(direction));
       } else {
         output.push(findAppropriateAsciiCharacter(matrix[i][j]));
       }
     }
   }
-
-  const count = output.filter((i) => i === "#");
 
   return output;
 }

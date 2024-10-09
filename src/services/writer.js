@@ -1,4 +1,4 @@
-import { CELL_SIDE, CONVERTED_ROW_LENGTH, FONT_SIZE } from "../index.js";
+import { CELL_SIDE, CONVERTED_WIDTH, FONT_SIZE } from "../index.js";
 
 import { createCanvas } from "canvas";
 import fs from "fs";
@@ -23,7 +23,7 @@ export function writeAscii(data) {
     ctx.fillText(char, x, y);
     x += CELL_SIDE;
 
-    if (i !== 0 && i % CONVERTED_ROW_LENGTH == 0) {
+    if (i !== 0 && i % CONVERTED_WIDTH == 0) {
       x = 0;
       y += CELL_SIDE;
     }

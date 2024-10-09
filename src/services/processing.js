@@ -23,11 +23,11 @@ export function getPixelMatrix(data, height, width) {
   let row = 0;
 
   for (const pixel of data) {
-    if (matrix[row].length >= width) {
+    if (matrix[row]?.length >= width) {
       row++;
-      matrix[row].push(pixel);
+      matrix[row]?.push(pixel);
     } else {
-      matrix[row].push(pixel);
+      matrix[row]?.push(pixel);
     }
   }
 

@@ -6,8 +6,8 @@ import { readGreyscaleImage } from "./services/reader.js";
 import sharp from "sharp";
 
 export const CELL_SIDE = 10;
-export const SOBEL_THRESHOLD = 5;
-export const FONT_SIZE = 5;
+export const SOBEL_THRESHOLD = 100;
+export const FONT_SIZE = 10;
 
 const __dirname = process.cwd();
 const imagePath = process.argv[2];
@@ -16,7 +16,8 @@ const { data, width, height } = await readGreyscaleImage(imagePath);
 
 export const ORIGINAL_HEIGHT = width;
 export const ORIGINAL_WIDTH = height;
-export const CONVERTED_ROW_LENGTH = ORIGINAL_WIDTH / CELL_SIDE;
+export const CONVERTED_WIDTH = ORIGINAL_WIDTH / CELL_SIDE;
+export const CONVERTED_HEIGHT = ORIGINAL_HEIGHT / CELL_SIDE;
 
 const matrix = getPixelMatrix(data, height, width);
 
@@ -24,7 +25,7 @@ const { magnitudes, directions, magnitudesArray } = sobelize(matrix, width, heig
 
 const proximalLuminanceOutput = calculateAverageProximalLuminance(matrix, CELL_SIDE, height, width);
 
-const proximalLuminanceOutputMatrix = getPixelMatrix(proximalLuminanceOutput, height, width);
+const proximalLuminanceOutputMatrix = getPixelMatrix(proximalLuminanceOutput, CONVERTED_HEIGHT, CONVERTED_HEIGHT);
 
 const asciiOutput = convertToAscii(proximalLuminanceOutputMatrix, magnitudes, directions);
 
