@@ -1,15 +1,32 @@
 {
-  // Use IntelliSense to learn about possible attributes.
-  // Hover to view descriptions of existing attributes.
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+    {
+      "type": "node",
+      "name": "ts-node",
+      "request": "launch",
+      "program": "${workspaceFolder}/src/index.ts",
+      "outFiles": ["${workspaceFolder}/**/*.(m|c|)js", "!**/node_modules/**"],
+      "console": "integratedTerminal"
+    },
     {
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/index.js",
+      "args": ["circle.png"]
+    },
+    {
+      "name": "tsx",
+      "type": "node",
+      "request": "launch",
+
+      "program": "${workspaceFolder}/src/index.ts",
+      "runtimeExecutable": "tsx",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"],
       "args": ["image.jpg"]
     }
   ]

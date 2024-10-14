@@ -1,7 +1,12 @@
 import { SOBEL_THRESHOLD } from "../index.js";
 
-export function calculateAverageProximalLuminance(matrix, cellSide, height, width) {
-  const outputLuminocity = [];
+export function calculateAverageProximalLuminance(
+  matrix: any,
+  cellSide: number,
+  height: number,
+  width: number
+): number[] {
+  const outputLuminocity: number[] = [];
   for (let i = 0; i < height; i += cellSide) {
     for (let j = 0; j < width; j += cellSide) {
       let cellSum = 0;
@@ -18,23 +23,27 @@ export function calculateAverageProximalLuminance(matrix, cellSide, height, widt
   return outputLuminocity;
 }
 
-export function getPixelMatrix(data, height, width) {
-  const matrix = new Array(height).fill().map(() => []);
+export function getPixelMatrix(data: Buffer | Types.FlatPixelData, height: number, width: number): any {
+  const matrix = makeEmptyMatrix(width, height);
   let row = 0;
 
-  for (const pixel of data) {
-    if (matrix[row]?.length >= width) {
-      row++;
-      matrix[row]?.push(pixel);
-    } else {
-      matrix[row]?.push(pixel);
+  try {
+    for (const pixel of data) {
+      if (matrix[row].length >= width) {
+        row++;
+        matrix[row].push(pixel);
+      } else {
+        matrix[row].push(pixel);
+      }
     }
+  } catch (error) {
+    console.log(error);
   }
 
   return matrix;
 }
 
-function makeEmptyMatrix(width, height) {
+function makeEmptyMatrix(width: number, height: number): Array<number[]> {
   const matrix = new Array(height);
   for (let i = 0; i < height; i++) {
     matrix[i] = new Array(width).fill(0);
@@ -42,7 +51,7 @@ function makeEmptyMatrix(width, height) {
   return matrix;
 }
 
-export function sobelize(matrix, width, height) {
+export function detectEdges(matrix: any, width: number, height: number): { magnitudes: any; directions: any } {
   const kernels = {
     x: [
       [-1, 0, 1],
@@ -58,7 +67,6 @@ export function sobelize(matrix, width, height) {
 
   const magnitudes = makeEmptyMatrix(width, height);
   const directions = makeEmptyMatrix(width, height);
-  const magnitudesArray = [];
 
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
@@ -86,10 +94,8 @@ export function sobelize(matrix, width, height) {
 
       magnitudes[i][j] = mag > threshold ? mag : 0;
       directions[i][j] = mag > threshold ? direction : 0;
-
-      magnitudesArray.push(mag > threshold ? mag : 0);
     }
   }
 
-  return { magnitudes, directions, magnitudesArray };
+  return { magnitudes, directions };
 }

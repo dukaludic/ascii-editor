@@ -1,10 +1,9 @@
-import { CONVERTED_HEIGHT, CONVERTED_WIDTH, ORIGINAL_HEIGHT, ORIGINAL_WIDTH } from "../index.js";
+import { CONVERTED_HEIGHT, CONVERTED_WIDTH } from "../index.js";
 
 const ascii = ["■", "@", "?", "0", "P", "o", "c", ":", ".", " "];
 const edges = ["|", "—", "/", "\\"];
 
-export function findAppropriateAsciiCharacter(value) {
-  // return " ";
+export function findAppropriateAsciiCharacter(value: number) {
   const percentage = (value / 255) * 100;
   let index = Math.floor(percentage / 10);
   if (percentage > 80) {
@@ -13,7 +12,7 @@ export function findAppropriateAsciiCharacter(value) {
   return ascii[index];
 }
 
-export function findAppropriateEdgeCharacter(direction) {
+export function findAppropriateEdgeCharacter(direction: number): string {
   switch (true) {
     case direction >= -0.1 && direction <= 0.1:
       return "—";
@@ -34,8 +33,8 @@ export function findAppropriateEdgeCharacter(direction) {
   }
 }
 
-export function convertToAscii(matrix, magnitudes, directions) {
-  const output = [];
+export function convertToAscii(matrix: any, magnitudes: any, directions: any) {
+  const output: string[] = [];
 
   for (let i = 0; i < CONVERTED_HEIGHT; i++) {
     for (let j = 0; j < CONVERTED_WIDTH; j++) {

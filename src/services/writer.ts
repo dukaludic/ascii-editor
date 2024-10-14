@@ -1,14 +1,14 @@
 import { CELL_SIDE, CONVERTED_WIDTH, FONT_SIZE } from "../index.js";
+import { Canvas, CanvasRenderingContext2D, createCanvas } from "canvas";
 
-import { createCanvas } from "canvas";
 import fs from "fs";
 
-let ctx;
-let canvas;
+let ctx: CanvasRenderingContext2D;
+let canvas: Canvas;
 let x = 0;
 let y = 0;
 
-export function setupCanvas(width, height) {
+export function setupCanvas(width: number, height: number): void {
   canvas = createCanvas(width, height);
   ctx = canvas.getContext("2d");
   ctx.fillStyle = "white";
@@ -18,7 +18,7 @@ export function setupCanvas(width, height) {
   ctx.fillStyle = "black";
 }
 
-export function writeAscii(data) {
+export function writeAscii(data: string[]): void {
   data.forEach((char, i) => {
     ctx.fillText(char, x, y);
     x += CELL_SIDE;
@@ -30,7 +30,7 @@ export function writeAscii(data) {
   });
 }
 
-export function writeToFileSystem(directory) {
+export function writeToFileSystem(directory: string): void {
   const out = fs.createWriteStream(directory + "/output.png");
   const stream = canvas.createPNGStream();
   stream.pipe(out);
