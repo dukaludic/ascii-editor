@@ -1,7 +1,7 @@
 import { SOBEL_THRESHOLD } from "../index.js";
 
 export function calculateAverageProximalLuminance(
-  matrix: any,
+  matrix: Types.Matrix,
   cellSide: number,
   height: number,
   width: number
@@ -23,21 +23,26 @@ export function calculateAverageProximalLuminance(
   return outputLuminocity;
 }
 
-export function getPixelMatrix(data: Buffer | Types.FlatPixelData, height: number, width: number): any {
+export function getPixelMatrix(data: Buffer | Types.FlatPixelData, height: number, width: number): Types.Matrix {
   const matrix = makeEmptyMatrix(width, height);
   let row = 0;
+  let column = 0;
 
-  try {
-    for (const pixel of data) {
-      if (matrix[row].length >= width) {
-        row++;
-        matrix[row].push(pixel);
-      } else {
-        matrix[row].push(pixel);
-      }
+  for (let i = 0; i < data.length; i++) {
+    const pixel = data[i];
+
+    matrix[row][column] = pixel;
+
+    column++;
+
+    if (column >= width) {
+      column = 0;
+      row++;
     }
-  } catch (error) {
-    console.log(error);
+
+    if (row >= height) {
+      break;
+    }
   }
 
   return matrix;
@@ -51,7 +56,11 @@ function makeEmptyMatrix(width: number, height: number): Array<number[]> {
   return matrix;
 }
 
-export function detectEdges(matrix: any, width: number, height: number): { magnitudes: any; directions: any } {
+export function detectEdges(
+  matrix: Types.Matrix,
+  width: number,
+  height: number
+): { magnitudes: Types.Matrix; directions: Types.Matrix } {
   const kernels = {
     x: [
       [-1, 0, 1],

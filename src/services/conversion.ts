@@ -33,7 +33,7 @@ export function findAppropriateEdgeCharacter(direction: number): string {
   }
 }
 
-export function convertToAscii(matrix: any, magnitudes: any, directions: any) {
+export function convertToAscii(matrix: Types.Matrix, magnitudes: Types.Matrix, directions: Types.Matrix) {
   const output: string[] = [];
 
   for (let i = 0; i < CONVERTED_HEIGHT; i++) {
