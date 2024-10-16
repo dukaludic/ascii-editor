@@ -67,3 +67,30 @@ export function debugDraw(data: { matrix?: Types.Matrix; array?: Buffer }, width
 
   writeToFileSystem(process.cwd(), "debug", debugCanvas);
 }
+
+export function writeToTextFile(input: string[]) {
+  const inputString = addNewLinesAndReturnString(input);
+
+  fs.writeFile(`textOutput.txt`, inputString, "utf8", (err) => {
+    if (err) {
+      console.error("Error writing to file", err);
+    } else {
+      console.log("File has been written successfully with newlines!");
+    }
+  });
+}
+
+function addNewLinesAndReturnString(input: string[]): string {
+  let result = "";
+
+  for (let i = 0; i < input.length; i++) {
+    const char = input[i];
+    if (i % CONVERTED_WIDTH === 0) {
+      result = result + "\n";
+    }
+
+    result = result + char;
+  }
+
+  return result;
+}
