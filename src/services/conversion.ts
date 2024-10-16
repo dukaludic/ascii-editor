@@ -1,4 +1,4 @@
-import { CONVERTED_HEIGHT, CONVERTED_WIDTH } from "../index.js";
+import { CELL_SIDE, CONVERTED_HEIGHT, CONVERTED_WIDTH } from "../index.js";
 
 const ascii = ["■", "@", "?", "0", "P", "o", "c", ":", ".", " "];
 const edges = ["|", "—", "/", "\\"];
@@ -38,9 +38,9 @@ export function convertToAscii(matrix: Types.Matrix, magnitudes: Types.Matrix, d
 
   for (let i = 0; i < CONVERTED_HEIGHT; i++) {
     for (let j = 0; j < CONVERTED_WIDTH; j++) {
-      const edgeMapTwin = magnitudes[i * 10][j * 10];
+      const edgeMapTwin = magnitudes[i * CELL_SIDE][j * CELL_SIDE];
       const isEdge = edgeMapTwin > 0;
-      const direction = directions[i * 10][j * 10];
+      const direction = directions[i * CELL_SIDE][j * CELL_SIDE];
       if (isEdge) {
         output.push(findAppropriateEdgeCharacter(direction));
       } else {

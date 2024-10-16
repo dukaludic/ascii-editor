@@ -8,7 +8,7 @@ let canvas: Canvas;
 let x = 0;
 let y = 0;
 
-export function setupCanvas(width: number, height: number): void {
+export function setupCanvas(width: number, height: number): Canvas {
   canvas = createCanvas(width, height);
   ctx = canvas.getContext("2d");
   ctx.fillStyle = "white";
@@ -16,6 +16,8 @@ export function setupCanvas(width: number, height: number): void {
 
   ctx.font = `${FONT_SIZE}px sans`;
   ctx.fillStyle = "black";
+
+  return canvas;
 }
 
 export function writeAscii(data: string[]): void {
@@ -30,12 +32,38 @@ export function writeAscii(data: string[]): void {
   });
 }
 
-export function writeToFileSystem(directory: string): void {
-  const out = fs.createWriteStream(directory + "/output.png");
+export function writeToFileSystem(directory: string, name: string, canvas: Canvas): void {
+  const out = fs.createWriteStream(directory + `/${name}.png`);
   const stream = canvas.createPNGStream();
   stream.pipe(out);
 
   out.on("finish", () => {
-    console.log("Ascii image was created and saved as output.png");
+    console.log(`Ascii image was created and saved as ${name}.png`);
   });
+}
+
+export function debugDraw(data: { matrix?: Types.Matrix; array?: Buffer }, width: number, gridSquarePx: number = 100) {
+  if (!data.array) {
+    return;
+  }
+
+  const debugCanvas = createCanvas(1400, 1400);
+  const ctx = debugCanvas.getContext("2d");
+
+  ctx.fillStyle = "white";
+  ctx.fillRect(0, 0, debugCanvas.width, debugCanvas.height);
+
+  ctx.font = "30px Arial";
+  ctx.fillStyle = "black";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+
+  for (let i = 0; i < data.array.length; i++) {
+    const x = (i % width) * gridSquarePx + gridSquarePx / 2;
+    const y = Math.floor(i / width) * gridSquarePx + gridSquarePx / 2;
+
+    ctx.fillText(data.array[i].toString(), x, y);
+  }
+
+  writeToFileSystem(process.cwd(), "debug", debugCanvas);
 }
