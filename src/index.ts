@@ -6,7 +6,7 @@ import { readGreyscaleImage } from "./services/reader.js";
 
 export const CELL_SIDE = 14;
 export const SOBEL_THRESHOLD = 900;
-export const FONT_SIZE = 10;
+export const FONT_SIZE = 15;
 
 const __dirname = process.cwd();
 const imagePath = process.argv[2];

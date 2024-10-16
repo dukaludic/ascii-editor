@@ -27,7 +27,7 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"],
-      "args": ["image.jpg"]
+      "args": ["images/image.jpg"]
     }
   ]
 }
