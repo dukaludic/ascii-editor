@@ -1,7 +1,7 @@
 import { SOBEL_THRESHOLD } from "../index.js";
 
 export function calculateAverageProximalLuminance(
-  matrix: Types.Matrix,
+  data: number[] | Buffer,
   cellSide: number,
   height: number,
   width: number
@@ -12,7 +12,8 @@ export function calculateAverageProximalLuminance(
       let cellSum = 0;
       for (let k = i; k < i + cellSide; k++) {
         for (let l = j; l < j + cellSide; l++) {
-          cellSum += matrix[k][l];
+          const index = fakeMatrixCoordinatesToIndex(l, k, width);
+          cellSum += data[index];
         }
       }
       const cellAverage = cellSum / cellSide ** 2;
@@ -107,4 +108,20 @@ export function detectEdges(
   }
 
   return { magnitudes, directions };
+}
+
+type Cartesian = {
+  x: number;
+  y: number;
+};
+
+export function indexToFakeMatrixCoordinates(index: number, width: number): Cartesian {
+  const y = Math.trunc(index / width);
+  const x = index % width;
+
+  return { x, y };
+}
+
+export function fakeMatrixCoordinatesToIndex(x: number, y: number, width: number): number {
+  return y * width + x;
 }
