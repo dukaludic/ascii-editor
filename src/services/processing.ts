@@ -1,4 +1,4 @@
-import { SOBEL_THRESHOLD } from "../index.js";
+import { CONVERTED_WIDTH, SOBEL_THRESHOLD } from "../index.js";
 
 export function calculateAverageProximalLuminance(
   data: number[] | Buffer,
@@ -58,10 +58,10 @@ function makeEmptyMatrix(width: number, height: number): Array<number[]> {
 }
 
 export function detectEdges(
-  matrix: Types.Matrix,
+  matrix: Buffer | number[],
   width: number,
   height: number
-): { magnitudes: Types.Matrix; directions: Types.Matrix } {
+): { magnitudes: number[]; directions: number[] } {
   const kernels = {
     x: [
       [-1, 0, 1],
@@ -75,8 +75,8 @@ export function detectEdges(
     ],
   };
 
-  const magnitudes = makeEmptyMatrix(width, height);
-  const directions = makeEmptyMatrix(width, height);
+  const magnitudes: number[] = [];
+  const directions: number[] = [];
 
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
@@ -85,13 +85,18 @@ export function detectEdges(
 
       for (let k = 0; k <= 2; k++) {
         for (let l = 0; l <= 2; l++) {
-          if (!matrix[i + k - 1]) {
+          const y = i + k - 1;
+          const x = j + l - 1;
+
+          const index = fakeMatrixCoordinatesToIndex(x, y, CONVERTED_WIDTH);
+
+          if (!matrix[index]) {
             sumX = 0;
             sumY = 0;
             continue;
           }
 
-          const px = matrix[i + k - 1][j + l - 1];
+          const px = matrix[index];
 
           sumX += px * kernels.x[k][l];
           sumY += px * kernels.y[k][l];
@@ -102,8 +107,10 @@ export function detectEdges(
 
       const threshold = SOBEL_THRESHOLD;
 
-      magnitudes[i][j] = mag > threshold ? mag : 0;
-      directions[i][j] = mag > threshold ? direction : 0;
+      const index = fakeMatrixCoordinatesToIndex(j, i, CONVERTED_WIDTH);
+
+      magnitudes[index] = mag > threshold ? mag : 0;
+      directions[index] = mag > threshold ? direction : 0;
     }
   }
 

@@ -35,23 +35,25 @@ export function findAppropriateEdgeCharacter(direction: number): string {
   }
 }
 
-export function convertToAscii(data: number[], magnitudes?: Types.Matrix, directions?: Types.Matrix) {
+export function convertToAscii(data: number[], magnitudes?: number[], directions?: number[]) {
   const output: string[] = [];
 
   for (let i = 0; i < CONVERTED_HEIGHT; i++) {
     for (let j = 0; j < CONVERTED_WIDTH; j++) {
-      // const edgeMapTwin = magnitudes[i * CELL_SIDE][j * CELL_SIDE];
-      // const isEdge = edgeMapTwin > 0;
-      // const direction = directions[i * CELL_SIDE][j * CELL_SIDE];
-      // if (isEdge) {
-      //   output.push(findAppropriateEdgeCharacter(direction));
-      // } else {
-      //   output.push(findAppropriateAsciiCharacter(matrix[i][j]));
-      // }
-
       const index = fakeMatrixCoordinatesToIndex(j, i, CONVERTED_WIDTH);
-
-      output.push(findAppropriateAsciiCharacter(data[index]));
+      if (magnitudes && directions) {
+        const edgesIndex = fakeMatrixCoordinatesToIndex(j * CELL_SIDE, i * CELL_SIDE, CONVERTED_WIDTH);
+        const edgeMapTwin = magnitudes && magnitudes[edgesIndex];
+        const isEdge = edgeMapTwin > 0;
+        const direction = directions[edgesIndex];
+        if (isEdge) {
+          output.push(findAppropriateEdgeCharacter(direction));
+        } else {
+          output.push(findAppropriateAsciiCharacter(data[index]));
+        }
+      } else {
+        output.push(findAppropriateAsciiCharacter(data[index]));
+      }
     }
   }
 
